@@ -34,4 +34,19 @@ public class Tests {
 
 		Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
 	}
+
+	[Test]
+	public void Node_ContainsAllLinesOfText() {
+		string json = CompileInk("""
+		                         Here goes a line.
+		                         And here goes another.
+		                         """);
+
+		InkGraph sut = InkGraph.Generate(json);
+
+		Node node = sut.Nodes[0];
+
+		Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
+		Assert.That(node.Lines[1], Is.EqualTo("And here goes another."));
+	}
 }
