@@ -6,6 +6,9 @@ public class InkGraph {
 			Nodes = new Node[1]
 		};
 
+		for (int i = 0; i < generatedGraph.Nodes.Length; i++)
+			generatedGraph.Nodes[i] = new Node();
+
 		return generatedGraph;
 	}
 
