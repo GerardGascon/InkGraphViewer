@@ -45,8 +45,10 @@ public class Tests {
 		InkGraph sut = InkGraph.Generate(json);
 
 		Node node = sut.Nodes[0];
-
-		Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
-		Assert.That(node.Lines[1], Is.EqualTo("And here goes another."));
+		Assert.Multiple(() => {
+			Assert.That(node.Lines, Has.Count.EqualTo(2));
+			Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
+			Assert.That(node.Lines[1], Is.EqualTo("And here goes another."));
+		});
 	}
 }
