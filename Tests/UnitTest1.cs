@@ -1,3 +1,4 @@
+using Domain;
 using Ink;
 
 namespace Tests;
@@ -8,14 +9,15 @@ public class Tests {
 		return compiler.Compile().ToJson();
 	}
 
-	[SetUp]
-	public void Setup() { }
-
 	[Test]
-	public void Test1() {
+	public void LinearStory_GeneratesOnlyOneNode() {
 		string json = CompileInk("""
 		                         Here goes a line.
 		                         And here goes another.
 		                         """);
+
+		InkGraph sut = InkGraph.Generate(json);
+
+		Assert.That(sut.Nodes, Has.Length.EqualTo(1));
 	}
 }
