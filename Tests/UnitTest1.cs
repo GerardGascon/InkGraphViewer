@@ -18,7 +18,7 @@ public class Tests {
 
 		InkGraph sut = InkGraph.Generate(json);
 
-		Assert.That(sut.Nodes, Has.Length.EqualTo(1));
+		Assert.That(sut.Nodes, Has.Count.EqualTo(1));
 	}
 
 	[Test]
