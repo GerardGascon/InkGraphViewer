@@ -16,8 +16,6 @@ public class Tests {
 		                         And here goes another.
 		                         """);
 
-		Console.WriteLine(json);
-
 		InkGraph sut = InkGraph.Generate(json);
 
 		Assert.That(sut.Nodes, Has.Count.EqualTo(1));
