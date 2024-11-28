@@ -4,7 +4,7 @@ namespace Domain;
 
 public class Node {
 	public readonly List<string> Lines = [];
-	public List<Connection> NodeConnections { get; } = [];
+	public List<Connection> Nodes { get; } = [];
 
 	private readonly Story _story;
 
@@ -40,6 +40,6 @@ public class Node {
 		const Connection.ConnectionType connectionType = Connection.ConnectionType.Choice;
 		string name = _story.Continue().TrimEnd('\r', '\n');
 		Connection connection = new(connectionType, name, node);
-		NodeConnections.Add(connection);
+		Nodes.Add(connection);
 	}
 }
