@@ -16,6 +16,8 @@ public class Tests {
 		                         And here goes another.
 		                         """);
 
+		Console.WriteLine(json);
+
 		InkGraph sut = InkGraph.Generate(json);
 
 		Assert.That(sut.Nodes, Has.Count.EqualTo(1));
@@ -50,5 +52,20 @@ public class Tests {
 			Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
 			Assert.That(node.Lines[1], Is.EqualTo("And here goes another."));
 		});
+	}
+
+	[Test]
+	public void BranchingDialogue_GeneratesMultipleNodes() {
+		string json = CompileInk("""
+		                         Here goes a line.
+		                         * Select an option
+		                             You've selected an option.
+		                         * Select another option
+		                             You've selected another option.
+		                         """);
+
+		InkGraph sut = InkGraph.Generate(json);
+
+		Assert.That(sut.Nodes, Has.Count.EqualTo(3));
 	}
 }
