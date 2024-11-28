@@ -122,7 +122,9 @@ public class Tests {
 		Assert.Multiple(() => {
 			Assert.That(sut.Nodes[0].Nodes, Has.Count.EqualTo(2));
 			Assert.That(sut.Nodes[0].Nodes[0].Name, Is.EqualTo("Select an option"));
+			Assert.That(sut.Nodes[0].Nodes[0].Type, Is.EqualTo(Connection.ConnectionType.Choice));
 			Assert.That(sut.Nodes[0].Nodes[1].Name, Is.EqualTo("Select another option"));
+			Assert.That(sut.Nodes[0].Nodes[1].Type, Is.EqualTo(Connection.ConnectionType.Choice));
 		});
 	}
 }
