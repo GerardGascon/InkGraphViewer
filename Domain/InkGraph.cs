@@ -29,7 +29,7 @@ public class InkGraph {
 	private static string GetKnotText(JValue text) => ((string)text!)[1..];
 
 	private static void ProcessKnot(JArray knot, InkGraph generatedGraph) {
-		if (knot.Count == 1)
+		if (knot.Count == 1) // #n
 			return;
 		if (IsDoneCommand(knot))
 			return;
@@ -40,18 +40,22 @@ public class InkGraph {
 		foreach (JToken token in knot) {
 			switch (token) {
 				case JValue { Value: not null and not "\n" } text:
-					bool inEvaluation = IsInEvaluation(text, wasInEvaluation);
-					if (inEvaluation || wasInEvaluation) {
-						wasInEvaluation = inEvaluation;
-						continue;
-					}
-					newNode.Lines.Add(GetKnotText(text));
+					wasInEvaluation = ProcessText(text, wasInEvaluation, newNode);
 					break;
 				case JObject subKnot:
 					ParseKnotObject(subKnot, generatedGraph);
 					break;
 			}
 		}
+	}
+
+	private static bool ProcessText(JValue text, bool wasInEvaluation, Node newNode) {
+		bool inEvaluation = IsInEvaluation(text, wasInEvaluation);
+		if (inEvaluation || wasInEvaluation) {
+			return inEvaluation;
+		}
+		newNode.Lines.Add(GetKnotText(text));
+		return inEvaluation;
 	}
 
 	private static bool IsDoneCommand(JArray knot) {
