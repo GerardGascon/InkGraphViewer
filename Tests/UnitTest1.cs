@@ -66,7 +66,7 @@ public class Tests {
 
 		Assert.Multiple(() => {
 			Assert.That(sut.Nodes, Has.Count.EqualTo(1));
-			Assert.That(sut.Nodes[0].Nodes, Has.Count.EqualTo(2));
+			Assert.That(sut.Nodes[0].NodeConnections, Has.Count.EqualTo(2));
 		});
 	}
 
@@ -101,9 +101,9 @@ public class Tests {
 		InkGraph sut = InkGraph.Generate(json);
 
 		Assert.Multiple(() => {
-			Assert.That(sut.Nodes[0].Nodes, Has.Count.EqualTo(2));
-			Assert.That(sut.Nodes[0].Nodes[0].Lines[0], Is.EqualTo("You've selected an option."));
-			Assert.That(sut.Nodes[0].Nodes[1].Lines[0], Is.EqualTo("You've selected another option."));
+			Assert.That(sut.Nodes[0].NodeConnections, Has.Count.EqualTo(2));
+			Assert.That(sut.Nodes[0].NodeConnections[0].Destination.Lines[0], Is.EqualTo("You've selected an option."));
+			Assert.That(sut.Nodes[0].NodeConnections[1].Destination.Lines[0], Is.EqualTo("You've selected another option."));
 		});
 	}
 

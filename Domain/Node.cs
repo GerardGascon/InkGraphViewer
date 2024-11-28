@@ -4,7 +4,6 @@ namespace Domain;
 
 public class Node {
 	public readonly List<string> Lines = [];
-	public List<Node> Nodes { get; } = [];
 	public List<Connection> NodeConnections { get; } = [];
 
 	private readonly Story _story;
@@ -30,14 +29,11 @@ public class Node {
 	}
 
 	private void AddNode(Connection.ConnectionType connectionType) {
-		Node node = new(_story, _story.state.ToJson());
 		switch (connectionType) {
 			case Connection.ConnectionType.Choice:
-				AddChoiceConnection(node);
+				AddChoiceConnection(new Node(_story, _story.state.ToJson()));
 				break;
 		}
-		Nodes.Add(node);
-		node.ExploreRecursively();
 	}
 
 	private void AddChoiceConnection(Node node) {
