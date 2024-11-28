@@ -6,6 +6,7 @@ namespace Domain;
 public partial class Node {
 	private void ReadOption(JArray array) {
 		GetChoiceProperties(array, out string jumpIndication, out string choiceName);
+		Node choiceNode = Search(this, jumpIndication);
 		Console.WriteLine(jumpIndication);
 		Console.WriteLine(choiceName);
 	}

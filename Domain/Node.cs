@@ -27,8 +27,42 @@ public partial class Node(JArray rootToken, Node parent) {
 		}
 	}
 
-	private void Search(Node origin, string movements) {
+	private Node Search(Node origin, string movements) {
+		string[] tokens = movements.Split('.');
+		Queue<string> actions = new();
+		foreach (string token in tokens) {
+			actions.Enqueue(token);
+		}
 
+		JToken startPosition = movements[0] == '.' ? rootToken : rootToken;
+		return Search(origin, startPosition, actions);
+	}
+
+	private Node Search(Node origin, JToken position, Queue<string> movements) {
+		if (!movements.TryDequeue(out string movement)) {
+
+		}
+
+		if (int.TryParse(movement, out int index)) {
+			return SearchByIndex(origin, position, index, movements);
+		}
+
+		if (movement == "^") {
+
+		}
+	}
+
+	private Node SearchByIndex(Node origin, JToken position, int index, Queue<string> movements) {
+		int i = 0;
+		foreach (JToken token in (JArray)position) {
+			if (token is not JObject obj)
+				continue;
+			if (i == index)
+				return Search(origin, obj, movements);
+			i++;
+		}
+
+		throw new IndexOutOfRangeException();
 	}
 
 	private void GenerateChildNode(JArray token) {
