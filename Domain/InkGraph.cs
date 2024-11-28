@@ -27,6 +27,7 @@ public class InkGraph {
 	}
 
 	private static string GetKnotText(JValue text) => ((string)text!)[1..];
+
 	private static void ProcessKnot(JArray knot, InkGraph generatedGraph) {
 		if (knot.Count == 1)
 			return;
@@ -34,17 +35,23 @@ public class InkGraph {
 			return;
 
 		Node newNode = new();
+		generatedGraph.Nodes.Add(newNode);
+		bool wasInEvaluation = false;
 		foreach (JToken token in knot) {
 			switch (token) {
 				case JValue { Value: not null and not "\n" } text:
+					bool inEvaluation = IsInEvaluation(text, wasInEvaluation);
+					if (inEvaluation || wasInEvaluation) {
+						wasInEvaluation = inEvaluation;
+						continue;
+					}
 					newNode.Lines.Add(GetKnotText(text));
 					break;
-				case JArray subKnot:
-					ProcessKnot(subKnot, generatedGraph);
+				case JObject subKnot:
+					ParseKnotObject(subKnot, generatedGraph);
 					break;
 			}
 		}
-		generatedGraph.Nodes.Add(newNode);
 	}
 
 	private static bool IsDoneCommand(JArray knot) {
@@ -53,5 +60,21 @@ public class InkGraph {
 		if (knot[0] is not JValue element)
 			return false;
 		return (string)element.Value! == "done";
+	}
+
+	private static bool IsInEvaluation(JValue value, bool wasInEvaluation) =>
+		wasInEvaluation switch {
+			false when value is { Value: "ev" } => true,
+			true when value is { Value: "/ev" } => false,
+			_ => wasInEvaluation
+		};
+
+	private static void ParseKnotObject(JObject knot, InkGraph generatedGraph) {
+		foreach (JProperty property in knot.Properties()) {
+			if (property.Value is not JArray subKnot)
+				continue;
+
+			ProcessKnot(subKnot, generatedGraph);
+		}
 	}
 }

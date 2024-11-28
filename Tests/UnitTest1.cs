@@ -68,4 +68,22 @@ public class Tests {
 
 		Assert.That(sut.Nodes, Has.Count.EqualTo(3));
 	}
+
+	[Test]
+	public void BranchingDialogueNodes_HaveAllLinesOfText() {
+		string json = CompileInk("""
+		                         Here goes a line.
+		                         * Select an option
+		                             You've selected an option.
+		                         * Select another option
+		                             You've selected another option.
+		                         """);
+
+		InkGraph sut = InkGraph.Generate(json);
+
+		Assert.Multiple(() => {
+			Assert.That(sut.Nodes[1].Lines[0], Is.EqualTo("You've selected an option."));
+			Assert.That(sut.Nodes[2].Lines[0], Is.EqualTo("You've selected another option."));
+		});
+	}
 }
