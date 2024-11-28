@@ -3,20 +3,20 @@
 namespace Domain;
 
 public class Node {
+	public readonly string Id;
 	public readonly List<string> Lines = [];
+
 	public List<Connection> Nodes { get; } = [];
 
 	private readonly Story _story;
 
 	public Node(Story story, string stateJson) {
 		_story = story;
+		Id = _story.state.currentPathString ?? "root";
 		_story.state.LoadJson(stateJson);
 	}
 
-	private string GetCurrentNodeId() => _story.state.currentPathString ?? "root";
-
 	public void ExploreRecursively() {
-		string id = GetCurrentNodeId();
 		string text = _story.ContinueMaximally();
 		Lines.AddRange(text.Split('\n', StringSplitOptions.RemoveEmptyEntries));
 
