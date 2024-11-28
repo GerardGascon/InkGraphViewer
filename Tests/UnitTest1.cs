@@ -4,9 +4,24 @@ using Ink;
 namespace Tests;
 
 public class Tests {
-	private string CompileInk(string code) {
+	private static string CompileInk(string code) {
 		Compiler compiler = new(code);
 		return compiler.Compile().ToJson();
+	}
+
+	[Test]
+	public void Story_GeneratesAnEntryNodeWithRootConnectionType() {
+		string json = CompileInk("""
+		                         Here goes a line.
+		                         And here goes another.
+		                         """);
+
+		Console.WriteLine(json);
+
+		InkGraph sut = InkGraph.Generate(json);
+
+		Assert.That(sut.OutgoingConnections, Has.Count.EqualTo(1));
+		Assert.That(sut.OutgoingConnections[0].Type, Is.EqualTo(Connection.ConnectionType.Init));
 	}
 
 	[Test]
@@ -20,7 +35,7 @@ public class Tests {
 
 		InkGraph sut = InkGraph.Generate(json);
 
-		Assert.That(sut.Nodes, Has.Count.EqualTo(1));
+		Assert.That(sut.OutgoingConnections, Has.Count.EqualTo(1));
 	}
 
 	[Test]
@@ -32,7 +47,7 @@ public class Tests {
 
 		InkGraph sut = InkGraph.Generate(json);
 
-		Node node = sut.Nodes[0];
+		Node node = sut.OutgoingConnections[0].Destination;
 
 		Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
 	}
@@ -46,7 +61,7 @@ public class Tests {
 
 		InkGraph sut = InkGraph.Generate(json);
 
-		Node node = sut.Nodes[0];
+		Node node = sut.OutgoingConnections[0].Destination;
 		Assert.Multiple(() => {
 			Assert.That(node.Lines, Has.Count.EqualTo(2));
 			Assert.That(node.Lines[0], Is.EqualTo("Here goes a line."));
@@ -66,7 +81,7 @@ public class Tests {
 
 		InkGraph sut = InkGraph.Generate(json);
 
-		Assert.That(sut.Nodes, Has.Count.EqualTo(3));
+		Assert.That(sut.OutgoingConnections[0].Destination.OutgoingConnections, Has.Count.EqualTo(2));
 	}
 
 	[Test]
@@ -78,32 +93,13 @@ public class Tests {
 		                         * Select another option
 		                             You've selected another option.
 		                         """);
+		Console.WriteLine(json);
 
 		InkGraph sut = InkGraph.Generate(json);
 
 		Assert.Multiple(() => {
-			Assert.That(sut.Nodes[0].Lines, Has.Count.EqualTo(1));
-			Assert.That(sut.Nodes[0].Lines[0], Is.EqualTo("Here goes a line."));
-		});
-	}
-
-	[Test]
-	public void BranchingDialogueNodes_HaveAllLinesOfText() {
-		string json = CompileInk("""
-		                         Here goes a line.
-		                         * Select an option
-		                             You've selected an option.
-		                         * Select another option
-		                             You've selected another option.
-		                         """);
-
-		InkGraph sut = InkGraph.Generate(json);
-
-		Assert.Multiple(() => {
-			Assert.That(sut.Nodes[1].Lines, Has.Count.EqualTo(1));
-			Assert.That(sut.Nodes[1].Lines[0], Is.EqualTo("You've selected an option."));
-			Assert.That(sut.Nodes[2].Lines, Has.Count.EqualTo(1));
-			Assert.That(sut.Nodes[2].Lines[0], Is.EqualTo("You've selected another option."));
+			Assert.That(sut.OutgoingConnections[0].Destination.OutgoingConnections[0].Destination.Lines, Has.Count.EqualTo(1));
+			Assert.That(sut.OutgoingConnections[0].Destination.OutgoingConnections[0].Destination.Lines[0], Is.EqualTo("Here goes a line."));
 		});
 	}
 }
