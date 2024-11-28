@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#nullable enable
+using Newtonsoft.Json.Linq;
 
 namespace Domain;
 
-public class Node(JArray rootToken, Node parent) {
+public partial class Node(JArray rootToken, Node parent) {
 	public readonly List<string> Lines = [];
 
 	public readonly List<Connection> IncomingConnections = [];
@@ -20,10 +21,14 @@ public class Node(JArray rootToken, Node parent) {
 					Lines.Add(GetKnotText(text));
 					break;
 				case JArray array:
-					GenerateChildNode(array);
+					ReadOption(array);
 					break;
 			}
 		}
+	}
+
+	private void Search(Node origin, string movements) {
+
 	}
 
 	private void GenerateChildNode(JArray token) {
