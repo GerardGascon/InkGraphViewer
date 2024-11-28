@@ -106,4 +106,23 @@ public class Tests {
 			Assert.That(sut.Nodes[0].Nodes[1].Lines[0], Is.EqualTo("You've selected another option."));
 		});
 	}
+
+	[Test]
+	public void BranchingDialogueConnections_HaveQuestionBlock() {
+		string json = CompileInk("""
+		                         Here goes a line.
+		                         * Select an option
+		                             You've selected an option.
+		                         * Select another option
+		                             You've selected another option.
+		                         """);
+
+		InkGraph sut = InkGraph.Generate(json);
+
+		Assert.Multiple(() => {
+			Assert.That(sut.Nodes[0].NodeConnections, Has.Count.EqualTo(2));
+			Assert.That(sut.Nodes[0].NodeConnections[0], Is.EqualTo("Select an option"));
+			Assert.That(sut.Nodes[0].NodeConnections[1], Is.EqualTo("Select another option"));
+		});
+	}
 }

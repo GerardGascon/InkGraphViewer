@@ -30,7 +30,9 @@ public class Node {
 	}
 
 	private void AddNode(bool isChoice = false) {
-		NodeConnections.Add(isChoice ? _story.Continue() : string.Empty);
+		NodeConnections.Add(isChoice
+			? _story.Continue().TrimEnd('\r', '\n')
+			: string.Empty);
 		Node node = new(_story, _story.state.ToJson());
 		Nodes.Add(node);
 		node.ExploreRecursively();
